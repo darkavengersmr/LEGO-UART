@@ -1,0 +1,78 @@
+bool b[8];
+int a;
+int t;
+int u;
+int pk;
+int dk;
+int es;
+int D1;
+int e;
+task motor()
+{
+  pk = 2;
+  dk = 4;
+  es = 0;
+  while(true)
+  {
+    e = a - MotorRotationCount(OUT_B);
+    u = e*pk+dk*(e-es);
+    if(u < -100)
+    {
+      u = -100;
+    }
+    if(u > 100)
+    {
+      u = 100;
+    }
+    OnFwd(OUT_B,u);
+    es = e;
+  }
+}
+task main()
+{
+  SetSensorLight(IN_3,false);
+  a = 0;
+  t = 200;
+  start motor;
+  while(true)
+  {
+    while(Sensor(IN_3)<65);
+    Wait(t+t/2);
+    for(int i = 7;i >= 0;i--)
+    {
+      if(Sensor(IN_3)>65)
+      {
+        b[i] = true;
+        Wait(t);
+      }
+      else
+      {
+        b[i] = false;
+        Wait(t);
+      }
+    }
+    ClearScreen();
+    if(Sensor(IN_3)<65) TextOut(0, LCD_LINE6, "ERROR");
+    for(int i = 7;i >= 0;i--)
+    {
+      if(b[i] == true)
+      {
+         NumOut((7-i)*8,0,1);
+      }
+      else
+      {
+         NumOut((7-i)*8,0,0);
+      }
+    }
+    a = 0;
+    for(int i = 7;i >= 0;i--)
+    {
+      if(b[i] == true)
+      {
+        a =a + 1 * pow(2, i);
+      }
+    }
+    NumOut(0,13,a);
+    Wait(t*2);
+  }
+}

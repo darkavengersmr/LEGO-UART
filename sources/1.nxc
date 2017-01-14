@@ -1,0 +1,109 @@
+int a;
+int t;
+bool b[8];
+bool y;
+task main()
+{
+
+  while(true)
+  {
+    y = false;
+    a = MotorRotationCount(OUT_B);
+    t = 200;
+    for(int i = 7;i >= 0;i--)
+    {
+      b[i] = false;
+
+    }
+    if (a < 0)
+    {
+      a = 0;
+    }
+    if(a > 255)
+    {
+      a = 255;
+    }
+    ClearScreen();
+    NumOut(0,13,a);
+    
+    for (int i=7; i >= 0; i--)
+    {
+      if (a / pow(2, i) >= 1)
+      {
+         b[i] = true;
+         a = a - pow(2,i);
+      }
+      else
+      {
+         b[i] = false;
+      }
+
+    }
+
+    
+    for (int i=7; i>=0; i--)
+    {
+
+     if(b[i] == true)
+     {
+       NumOut((7-i)*8,0,1);
+     }
+     else
+     {
+       NumOut((7-i)*8,0,0);
+     }
+
+    }
+    SetSensorLight(IN_3,true);
+    y = true;
+    Wait(t-21);
+    for(int i = 7;i >= 0;i--)
+    {
+      if(b[i] == true)
+      {
+        SetSensorLight(IN_3,true);
+        if(y == true)
+        {
+          Wait(t-1);
+        }
+        else
+        {
+          Wait(t-21);
+        }
+        y = true;
+      }
+      else
+      {
+        SetSensorLight(IN_3,false);
+        if(y == false)
+        {
+          Wait(t-1);
+        }
+        else
+        {
+          Wait(t-21);
+        }
+        y = false;
+      }
+    }
+
+    SetSensorLight(IN_3,true);
+    if(y == true)
+    {
+      Wait(t-1);
+    }
+    else
+    {
+      Wait(t-21);
+    }
+    y = true;
+
+
+    SetSensorLight(IN_3,false);
+    y = false;
+    Wait(t*4);
+
+
+  }
+}
+
